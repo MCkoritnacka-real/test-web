@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stav FiveM Serveru | Friends RP</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-align: center;
+      margin: 0;
+      padding: 0 20px;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.4);
+      max-width: 400px;
+      width: 100%;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      margin-bottom: 10px;
+    }
+
+    #playerCount {
+      font-size: 1.4rem;
+      margin-top: 15px;
+    }
+
+    #serverStatus {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    .online {
+      color: #27ae60;
+    }
+
+    .offline {
+      color: #e74c3c;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Friends RP</h1>
+    <div id="playerCount">Načítám údaje...</div>
+    <div id="serverStatus"></div>
+  </div>
+
+  <script>
+    const endpointId = "8d7ba5";
+
+    function updatePlayerData() {
+      fetch(`https://servers-frontend.fivem.net/api/servers/single/${endpointId}`)
+        .then(res => res.json())
+        .then(data => {
+          const players = data.Data.players;
+          const maxPlayers = data.Data.vars.sv_maxClients;
+          const countEl = document.getElementById('playerCount');
+          const statusEl = document.getElementById('serverStatus');
+
+          countEl.innerText = `Hráči online: ${players.length} / ${maxPlayers}`;
+          statusEl.innerText = "Server je ONLINE";
+          statusEl.className = 'online';
+        })
+        .catch(err => {
+          const countEl = document.getElementById('playerCount');
+          const statusEl = document.getElementById('serverStatus');
+
+          countEl.innerText = "Nepodarilo sa načítať údaje.";
+          statusEl.innerText = "Server je OFFLINE alebo nedostupný.";
+          statusEl.className = 'offline';
+        });
+    }
+
+    updatePlayerData();
+    setInterval(updatePlayerData, 15000); // aktualizácia každých 15 sekúnd
+  </script>
+</body>
+</html>
